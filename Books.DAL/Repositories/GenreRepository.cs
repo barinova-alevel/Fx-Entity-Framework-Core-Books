@@ -30,14 +30,11 @@ namespace Books.DataAccessLayer.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public void Remove(Genre genre)
         {
-            var genre = await _context.Genres.FindAsync(id);
-            if (genre != null)
-            {
-                _context.Genres.Remove(genre);
-                await _context.SaveChangesAsync();
-            }
+            // _dbSet.Remove(book);
+            _context.Remove(genre);
+            //save changes?
         }
     }
 }
