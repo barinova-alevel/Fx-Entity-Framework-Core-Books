@@ -3,7 +3,8 @@ namespace Books.DataAccessLayer.Models
 {
     public class Author
     {
-        Guid _id { get; set; }
-        string _name { get; set; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public Guid BookId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿
+using Books.DataAccessLayer.Configurations;
 using Books.DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,8 +19,10 @@ namespace Books.DataAccessLayer
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-             base.OnModelCreating(modelBuilder);
-            //modelBuilder.ApplyConfiguration(new BookConfiguration);
+            modelBuilder.ApplyConfiguration(new BookConfiguration());
+            modelBuilder.ApplyConfiguration(new AuthorConfiguration());
+            modelBuilder.ApplyConfiguration(new GenreConfiguration());
+            //modelBuilder.ApplyConfiguration(new PublisherConfiguration());
         }
     }
 }

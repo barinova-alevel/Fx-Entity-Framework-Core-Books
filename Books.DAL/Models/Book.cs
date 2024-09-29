@@ -1,14 +1,19 @@
 ﻿
+using Microsoft.Identity.Client;
+
 namespace Books.DataAccessLayer.Models
 {
     public class Book
     {
-        Guid _id { get; set; }
-        string _title { get; set; }
-        int _pages { get; set; }
-        Guid _genreId { get; set; }
-        Guid _authorId { get; set; }
-        Guid _publisherId { get; set; }
-        DateTime _releaseDate { get; set; }
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public int Pages { get; set; }
+        public Guid GenreId { get; set; }
+        public Guid AuthorId { get; set; }
+        public Guid PublisherId { get; set; }
+        public DateTime ReleaseDate { get; set; }
+
+        public List<Author> Authors { get; set; } = new List<Author>();
+        public Genre Genre { get; set; }
     }
 }

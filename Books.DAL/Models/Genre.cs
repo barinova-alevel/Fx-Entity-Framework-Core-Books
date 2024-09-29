@@ -3,7 +3,9 @@ namespace Books.DataAccessLayer.Models
 {
     public class Genre
     {
-        Guid _id {  get; set; }
-        string _name { get; set; }
+        public Guid Id {  get; set; }
+        public string Name { get; set; }
+        public Guid BookId { get; set; }
+        public List<Book> Books { get; set; } = new List<Book>();
     }
 }
