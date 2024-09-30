@@ -14,7 +14,7 @@ namespace Books.DataAccessLayer
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) 
         {
-            Database.EnsureCreated();
+            //  Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -22,7 +22,7 @@ namespace Books.DataAccessLayer
             modelBuilder.ApplyConfiguration(new BookConfiguration());
             modelBuilder.ApplyConfiguration(new AuthorConfiguration());
             modelBuilder.ApplyConfiguration(new GenreConfiguration());
-            //modelBuilder.ApplyConfiguration(new PublisherConfiguration());
+            modelBuilder.ApplyConfiguration(new PublisherConfiguration());
         }
     }
 }
