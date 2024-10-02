@@ -14,6 +14,10 @@ namespace Books.DataAccessLayer.Models
         public DateTime ReleaseDate { get; set; }
 
         public List<Author> Authors { get; set; } = new List<Author>();
+        public List<Publisher> Publishers { get; set; } = new List<Publisher>();
+        public List<BookAuthor> BookAuthors { get; set; } = new List<BookAuthor>();
         public Genre Genre { get; set; }
+        public Publisher Publisher { get; set; }
+        public Author Author { get; set; }
     }
 }

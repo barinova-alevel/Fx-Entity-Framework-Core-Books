@@ -10,8 +10,8 @@ class Program
             .AddJsonFile("appsettings.json", true, true)
             .Build();
 
+        var connectionString = configuration.GetConnectionString("DefaultConnection"); //?why null here?
         var dbOptionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
         dbOptionsBuilder.UseSqlServer(connectionString, i => i.CommandTimeout(20));
         dbOptionsBuilder.LogTo(Console.Write);
         //add logger
