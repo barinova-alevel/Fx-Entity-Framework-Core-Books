@@ -23,34 +23,34 @@ namespace Books.DataAccessLayer
             //  Database.EnsureCreated();
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder dBContextOptionsBuilder)
-            => dBContextOptionsBuilder.UseSqlServer("Server=OKSANA_NANGA;Database=BooksDb;Trusted_Connection=True;TrustServerCertificate=True;");
+       //protected override void OnConfiguring(DbContextOptionsBuilder dBContextOptionsBuilder)
+       //     => dBContextOptionsBuilder.UseSqlServer("Server=OKSANA_NANGA;Database=BooksDb;Trusted_Connection=True;TrustServerCertificate=True;");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Book>(entity =>
-            {
+            //modelBuilder.Entity<Book>(entity =>
+            //{
 
-                entity.ToTable("Books");
-                entity.HasKey(p => p.Id).HasName("Books");
+            //    entity.ToTable("Books");
+            //    entity.HasKey(p => p.Id).HasName("Books");
 
-                entity.Property(p => p.Id)
+            //    entity.Property(p => p.Id)
 
-                .HasColumnName("id")
+            //    .HasColumnName("id")
 
-                .HasColumnType("GUID").ValueGeneratedNever();
+            //    .HasColumnType("GUID").ValueGeneratedNever();
 
-                entity.Property(p => p.Title)
+            //    entity.Property(p => p.Title)
 
-                .HasColumnName("title");
+            //    .HasColumnName("title");
 
-            });
-            //modelBuilder.Entity<Book>().HasKey("BookId");
-            //    modelBuilder.ApplyConfiguration(new BookConfiguration());
-            //    modelBuilder.ApplyConfiguration(new AuthorConfiguration());
-            //    modelBuilder.ApplyConfiguration(new GenreConfiguration());
-            //    modelBuilder.ApplyConfiguration(new PublisherConfiguration());
-            //    modelBuilder.ApplyConfiguration(new BookAuthorConfiguration());
+            //});
+            modelBuilder.Entity<Book>().HasKey("BookId");
+            modelBuilder.ApplyConfiguration(new BookConfiguration());
+            modelBuilder.ApplyConfiguration(new AuthorConfiguration());
+            modelBuilder.ApplyConfiguration(new GenreConfiguration());
+            modelBuilder.ApplyConfiguration(new PublisherConfiguration());
+            modelBuilder.ApplyConfiguration(new BookAuthorConfiguration());
         }
     }
 }
