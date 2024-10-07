@@ -2,55 +2,41 @@
 using Books.DataAccessLayer.Configurations;
 using Books.DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
+using conf = Microsoft.Extensions.Configuration;
 
 namespace Books.DataAccessLayer
 {
     public class ApplicationContext : DbContext
     {
+
         public DbSet<Book> Books { get; set; }
-        public DbSet<BookAuthor> BookAuthors { get; set; }
         public DbSet<Author> Authors { get; set; }
+        public DbSet<BookAuthor> BookAuthors { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
 
-        public ApplicationContext()
-        { 
-        }
 
-        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) 
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //  Database.EnsureCreated();
+            if (!optionsBuilder.IsConfigured)
+            {
+                //const string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\HP\\OneDrive\\Documents\\tables.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
+                const string connectionString = "Server=OKSANA_NANGA;Database=BooksDb1;Trusted_Connection=True;TrustServerCertificate=True;";
+                optionsBuilder.UseSqlServer(connectionString);
+                optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
+            }
         }
 
-       //protected override void OnConfiguring(DbContextOptionsBuilder dBContextOptionsBuilder)
-       //     => dBContextOptionsBuilder.UseSqlServer("Server=OKSANA_NANGA;Database=BooksDb;Trusted_Connection=True;TrustServerCertificate=True;");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Book>(entity =>
-            //{
-
-            //    entity.ToTable("Books");
-            //    entity.HasKey(p => p.Id).HasName("Books");
-
-            //    entity.Property(p => p.Id)
-
-            //    .HasColumnName("id")
-
-            //    .HasColumnType("GUID").ValueGeneratedNever();
-
-            //    entity.Property(p => p.Title)
-
-            //    .HasColumnName("title");
-
-            //});
-            modelBuilder.Entity<Book>().HasKey("BookId");
             modelBuilder.ApplyConfiguration(new BookConfiguration());
             modelBuilder.ApplyConfiguration(new AuthorConfiguration());
             modelBuilder.ApplyConfiguration(new GenreConfiguration());
             modelBuilder.ApplyConfiguration(new PublisherConfiguration());
-            modelBuilder.ApplyConfiguration(new BookAuthorConfiguration());
         }
     }
 }

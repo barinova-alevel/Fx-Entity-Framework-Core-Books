@@ -21,13 +21,12 @@ namespace Books.DataAccessLayer.Configurations
             builder.HasOne(b => b.Genre)
                 .WithMany(g => g.Books)
                 .HasForeignKey(b => b.GenreId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(b => b.Publisher)
                 .WithMany(p => p.Books)
                 .HasForeignKey(b => b.PublisherId)
-                .OnDelete(DeleteBehavior.SetNull); //what's better null or cascade or restrict?
-
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }
