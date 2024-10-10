@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Books.DataAccessLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class attempt4 : Migration
+    public partial class _7 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -60,18 +60,18 @@ namespace Books.DataAccessLayer.Migrations
                 name: "Books",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    pages = table.Column<int>(type: "int", nullable: false),
-                    genreId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    authorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    publisherId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    releaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Pages = table.Column<int>(type: "int", nullable: false),
+                    GenreId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AuthorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PublisherId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AuthorId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Books", x => x.id);
+                    table.PrimaryKey("PK_Books", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Books_Authors_AuthorId1",
                         column: x => x.AuthorId1,
@@ -79,8 +79,8 @@ namespace Books.DataAccessLayer.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Books_Genres_genreId",
-                        column: x => x.genreId,
+                        name: "FK_Books_Genres_GenreId",
+                        column: x => x.GenreId,
                         principalTable: "Genres",
                         principalColumn: "GenreId");
                 });
@@ -100,7 +100,7 @@ namespace Books.DataAccessLayer.Migrations
                         name: "FK_Publishers_Books_BookId",
                         column: x => x.BookId,
                         principalTable: "Books",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -125,14 +125,14 @@ namespace Books.DataAccessLayer.Migrations
                 column: "AuthorId1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Books_genreId",
+                name: "IX_Books_GenreId",
                 table: "Books",
-                column: "genreId");
+                column: "GenreId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Books_publisherId",
+                name: "IX_Books_PublisherId",
                 table: "Books",
-                column: "publisherId");
+                column: "PublisherId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Publishers_BookId",
@@ -144,7 +144,7 @@ namespace Books.DataAccessLayer.Migrations
                 table: "Authors",
                 column: "BookId",
                 principalTable: "Books",
-                principalColumn: "id",
+                principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
@@ -152,13 +152,13 @@ namespace Books.DataAccessLayer.Migrations
                 table: "BookAuthors",
                 column: "BookId",
                 principalTable: "Books",
-                principalColumn: "id",
+                principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Books_Publishers_publisherId",
+                name: "FK_Books_Publishers_PublisherId",
                 table: "Books",
-                column: "publisherId",
+                column: "PublisherId",
                 principalTable: "Publishers",
                 principalColumn: "PublisherId",
                 onDelete: ReferentialAction.SetNull);

@@ -1,5 +1,5 @@
 ﻿
-//using Microsoft.Identity.Client;
+using Microsoft.Identity.Client;
 
 namespace Books.DataAccessLayer.Models
 {
@@ -9,7 +9,7 @@ namespace Books.DataAccessLayer.Models
         public string Title { get; set; }
         public int Pages { get; set; }
         public Guid GenreId { get; set; }
-        public Guid AuthorId { get; set; }
+        public Guid AuthorIdInBook { get; set; }
         public Guid PublisherId { get; set; }
         public DateTime ReleaseDate { get; set; }
 

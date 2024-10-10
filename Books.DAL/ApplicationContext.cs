@@ -2,34 +2,20 @@
 using Books.DataAccessLayer.Configurations;
 using Books.DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Globalization;
-using conf = Microsoft.Extensions.Configuration;
 
 namespace Books.DataAccessLayer
 {
     public class ApplicationContext : DbContext
     {
-
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
-        public DbSet<BookAuthor> BookAuthors { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
 
-
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) 
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                //const string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\HP\\OneDrive\\Documents\\tables.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
-                const string connectionString = "Server=OKSANA_NANGA;Database=BooksDb1;Trusted_Connection=True;TrustServerCertificate=True;";
-                optionsBuilder.UseSqlServer(connectionString);
-                optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
-            }
+            //  Database.EnsureCreated();
         }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +23,7 @@ namespace Books.DataAccessLayer
             modelBuilder.ApplyConfiguration(new AuthorConfiguration());
             modelBuilder.ApplyConfiguration(new GenreConfiguration());
             modelBuilder.ApplyConfiguration(new PublisherConfiguration());
+            modelBuilder.ApplyConfiguration(new BookAuthorConfiguration());
         }
     }
 }

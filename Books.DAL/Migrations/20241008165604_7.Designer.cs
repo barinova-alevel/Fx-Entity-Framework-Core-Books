@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Books.DataAccessLayer.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20241007171504_attempt4")]
-    partial class attempt4
+    [Migration("20241008165604_7")]
+    partial class _7
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,36 +50,35 @@ namespace Books.DataAccessLayer.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
+                        .HasColumnName("Id");
 
                     b.Property<Guid>("AuthorId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("authorId");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AuthorId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("GenreId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("genreId");
+                        .HasColumnName("GenreId");
 
                     b.Property<int>("Pages")
                         .HasColumnType("int")
-                        .HasColumnName("pages");
+                        .HasColumnName("Pages");
 
                     b.Property<Guid>("PublisherId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("publisherId");
+                        .HasColumnName("PublisherId");
 
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2")
-                        .HasColumnName("releaseDate");
+                        .HasColumnName("ReleaseDate");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasColumnName("title");
+                        .HasColumnName("Title");
 
                     b.HasKey("Id");
 
