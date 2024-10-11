@@ -18,9 +18,9 @@ namespace Books.DataAccessLayer
         {
             _context = context;
             Books = new BookRepository(_context);
-            Authors = new AuthorRepository(_context);
+            //Authors = new AuthorRepository(_context);
             Genres = new GenreRepository(_context);
-            Publishers = new PublisherRepository(_context);
+           // Publishers = new PublisherRepository(_context);
         }
 
         public async Task<int> CompleteAsync()
