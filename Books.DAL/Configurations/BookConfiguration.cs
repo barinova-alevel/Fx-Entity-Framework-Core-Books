@@ -22,6 +22,18 @@ namespace Books.DataAccessLayer.Configurations
                 .HasForeignKey(b => b.GenreId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(b => b.Author)
+                .WithMany(p => p.Books)
+                .HasForeignKey(b => b.AuthorId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(b => b.Publisher)
+                .WithMany(p => p.Books)
+                .HasForeignKey(b => b.PublisherId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
