@@ -20,7 +20,7 @@ namespace Books.DataAccessLayer.Configurations
             builder.HasOne(b => b.Genre)
                 .WithMany(p => p.Books)
                 .HasForeignKey(b => b.GenreId)
-                .IsRequired()
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(b => b.Author)
@@ -32,7 +32,7 @@ namespace Books.DataAccessLayer.Configurations
             builder.HasOne(b => b.Publisher)
                 .WithMany(p => p.Books)
                 .HasForeignKey(b => b.PublisherId)
-                .IsRequired()
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
