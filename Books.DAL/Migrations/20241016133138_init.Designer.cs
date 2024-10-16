@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Books.DataAccessLayer.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
+<<<<<<<< HEAD:Books.DAL/Migrations/20241008165604_7.Designer.cs
     [Migration("20241008165604_7")]
     partial class _7
+========
+    [Migration("20241016133138_init")]
+    partial class init
+>>>>>>>> for-migration:Books.DAL/Migrations/20241016133138_init.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,18 +34,15 @@ namespace Books.DataAccessLayer.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("AuthorId");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BookId");
 
                     b.ToTable("Authors", (string)null);
                 });
@@ -53,24 +55,27 @@ namespace Books.DataAccessLayer.Migrations
                         .HasColumnName("Id");
 
                     b.Property<Guid>("AuthorId")
+<<<<<<<< HEAD:Books.DAL/Migrations/20241008165604_7.Designer.cs
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AuthorId1")
+========
+>>>>>>>> for-migration:Books.DAL/Migrations/20241016133138_init.Designer.cs
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("GenreId")
+                    b.Property<Guid?>("GenreId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("GenreId");
 
-                    b.Property<int>("Pages")
+                    b.Property<int?>("Pages")
                         .HasColumnType("int")
                         .HasColumnName("Pages");
 
-                    b.Property<Guid>("PublisherId")
+                    b.Property<Guid?>("PublisherId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("PublisherId");
 
-                    b.Property<DateTime>("ReleaseDate")
+                    b.Property<DateTime?>("ReleaseDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("ReleaseDate");
 
@@ -82,7 +87,7 @@ namespace Books.DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId1");
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("GenreId");
 
@@ -91,36 +96,12 @@ namespace Books.DataAccessLayer.Migrations
                     b.ToTable("Books", (string)null);
                 });
 
-            modelBuilder.Entity("Books.DataAccessLayer.Models.BookAuthor", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("BookAuthors");
-                });
-
             modelBuilder.Entity("Books.DataAccessLayer.Models.Genre", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("GenreId");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -139,9 +120,6 @@ namespace Books.DataAccessLayer.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("PublisherId");
 
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -149,39 +127,26 @@ namespace Books.DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId");
-
                     b.ToTable("Publishers", (string)null);
-                });
-
-            modelBuilder.Entity("Books.DataAccessLayer.Models.Author", b =>
-                {
-                    b.HasOne("Books.DataAccessLayer.Models.Book", null)
-                        .WithMany("Authors")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Books.DataAccessLayer.Models.Book", b =>
                 {
                     b.HasOne("Books.DataAccessLayer.Models.Author", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId1")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("Books")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Books.DataAccessLayer.Models.Genre", "Genre")
                         .WithMany("Books")
                         .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Books.DataAccessLayer.Models.Publisher", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Author");
 
@@ -190,46 +155,9 @@ namespace Books.DataAccessLayer.Migrations
                     b.Navigation("Publisher");
                 });
 
-            modelBuilder.Entity("Books.DataAccessLayer.Models.BookAuthor", b =>
-                {
-                    b.HasOne("Books.DataAccessLayer.Models.Author", "Author")
-                        .WithMany("BookAuthors")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Books.DataAccessLayer.Models.Book", "Book")
-                        .WithMany("BookAuthors")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("Books.DataAccessLayer.Models.Publisher", b =>
-                {
-                    b.HasOne("Books.DataAccessLayer.Models.Book", null)
-                        .WithMany("Publishers")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Books.DataAccessLayer.Models.Author", b =>
                 {
-                    b.Navigation("BookAuthors");
-                });
-
-            modelBuilder.Entity("Books.DataAccessLayer.Models.Book", b =>
-                {
-                    b.Navigation("Authors");
-
-                    b.Navigation("BookAuthors");
-
-                    b.Navigation("Publishers");
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("Books.DataAccessLayer.Models.Genre", b =>
