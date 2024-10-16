@@ -50,22 +50,18 @@ namespace Books.DataAccessLayer.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("GenreId")
-                        .IsRequired()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("GenreId");
 
                     b.Property<int?>("Pages")
-                        .IsRequired()
                         .HasColumnType("int")
                         .HasColumnName("Pages");
 
                     b.Property<Guid?>("PublisherId")
-                        .IsRequired()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("PublisherId");
 
                     b.Property<DateTime?>("ReleaseDate")
-                        .IsRequired()
                         .HasColumnType("datetime2")
                         .HasColumnName("ReleaseDate");
 

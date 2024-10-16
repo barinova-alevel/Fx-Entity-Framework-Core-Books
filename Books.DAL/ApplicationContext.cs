@@ -20,7 +20,7 @@ namespace Books.DataAccessLayer
         {
             if (!optionsBuilder.IsConfigured)
             {
-                const string connectionString = "Server=OKSANA_NANGA;Database=BooksDb1;Trusted_Connection=True;TrustServerCertificate=True;";
+                const string connectionString = "Server=OKSANA_NANGA;Database=BooksDb;Trusted_Connection=True;TrustServerCertificate=True;";
                 optionsBuilder.UseSqlServer(connectionString);
                 optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
             }

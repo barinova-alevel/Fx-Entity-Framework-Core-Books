@@ -12,10 +12,10 @@ namespace Books.DataAccessLayer.Configurations
             builder.ToTable("Books").HasKey(b => b.Id);
             builder.Property(p => p.Id).IsRequired().HasColumnName("Id");
             builder.Property(p => p.Title).IsRequired().HasColumnName("Title").HasMaxLength(255);
-            builder.Property(p => p.Pages).IsRequired().HasColumnName("Pages");
-            builder.Property(p => p.GenreId).IsRequired().HasColumnName("GenreId");
-            builder.Property(p => p.PublisherId).IsRequired().HasColumnName("PublisherId");
-            builder.Property(p => p.ReleaseDate).IsRequired().HasColumnName("ReleaseDate");
+            builder.Property(p => p.Pages).IsRequired(false).HasColumnName("Pages");
+            builder.Property(p => p.GenreId).IsRequired(false).HasColumnName("GenreId");
+            builder.Property(p => p.PublisherId).IsRequired(false).HasColumnName("PublisherId");
+            builder.Property(p => p.ReleaseDate).IsRequired(false).HasColumnName("ReleaseDate");
 
             builder.HasOne(b => b.Genre)
                 .WithMany(p => p.Books)
