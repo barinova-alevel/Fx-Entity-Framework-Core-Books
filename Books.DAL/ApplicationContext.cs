@@ -28,7 +28,6 @@ namespace Books.DataAccessLayer
             modelBuilder.ApplyConfiguration(new AuthorConfiguration());
             modelBuilder.ApplyConfiguration(new GenreConfiguration());
             modelBuilder.ApplyConfiguration(new PublisherConfiguration());
-            modelBuilder.ApplyConfiguration(new BookAuthorConfiguration());
         }
     }
 }
