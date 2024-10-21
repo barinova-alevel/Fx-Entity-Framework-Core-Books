@@ -8,7 +8,7 @@ class Program
     static void Main()
     {
         var applicationContext = new ApplicationContext();
-        var book = applicationContext.Books.First();
+        //var book = applicationContext.Books.First();
         applicationContext.SaveChanges();
 
         IConfigurationRoot builder = new ConfigurationBuilder()
@@ -21,7 +21,7 @@ class Program
         Log.Logger.Information("start");
 
         InputOutput inputOutput = new InputOutput();
-        //inputOutput.Run();
-
+        inputOutput.Run();
+        Console.ReadKey();
     }
 }
