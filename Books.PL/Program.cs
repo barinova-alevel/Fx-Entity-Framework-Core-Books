@@ -8,7 +8,6 @@ class Program
     static void Main()
     {
         var applicationContext = new ApplicationContext();
-        //var book = applicationContext.Books.First();
         applicationContext.SaveChanges();
 
         IConfigurationRoot builder = new ConfigurationBuilder()

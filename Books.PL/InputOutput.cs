@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Books.BussinessLogicLayer.Services;
+using Serilog;
 
 namespace Books.PresentationLayer
 {
@@ -19,6 +20,10 @@ namespace Books.PresentationLayer
             Console.WriteLine("Please provide a file path to books list:");
             string userInput = ReadConsoleInput();
             string filePath = GetFilePath(userInput);
+            var csvService = new CsvService();
+            var records = csvService.ParseCsv(filePath);
+            //check if program has been run with same file path, then avoid duplicated entries. 
+            //Ensure the date in the CSV file is formatted correctly
         }
 
         public string GetFilePath(string userInput)
