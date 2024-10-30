@@ -15,7 +15,7 @@ namespace Books.BussinessLogicLayer.Services
                 csv.Context.RegisterClassMap<RecordMap>();
                 var result = csv.GetRecords<Record>().ToList();
                 Log.Information("List of records has been created.");
-                DisplayList(result);
+                //DisplayList(result);
                 return result;
             }
         }
