@@ -23,6 +23,12 @@ namespace Books.DataAccessLayer.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddRangeAsync(IEnumerable<Publisher> publishers)
+        {
+            await _context.Publishers.AddRangeAsync(publishers);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task UpdateAsync(Publisher publisher)
         {
             _context.Publishers.Update(publisher);
