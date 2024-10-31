@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Books.DataAccessLayer;
+using Books.DataAccessLayer.Models;
 using CsvHelper;
 using Serilog;
 
@@ -18,6 +19,39 @@ namespace Books.BussinessLogicLayer.Services
                 //DisplayList(result);
                 return result;
             }
+        }
+
+        public List<Author> GetListUniqueAuthors(IEnumerable<Record> records)
+        {
+           var authors = records
+            .Where(r => !string.IsNullOrEmpty(r.Author))
+            .Select(r => r.Author)
+            .Distinct()
+            .Select(_=> new Author() { Name = _ })
+            .ToList();
+            return authors;
+        }
+
+        public List<Genre> GetListUniqueGenres(IEnumerable<Record> records)
+        {
+            var genres = records
+             .Where(r => !string.IsNullOrEmpty(r.Genre))
+             .Select(r => r.Genre)
+             .Distinct()
+             .Select(_ => new Genre() { Name = _ })
+             .ToList();
+            return genres;
+        }
+
+        public List<Publisher> GetListUniquePublishers(IEnumerable<Record> records)
+        {
+            var publishers = records
+             .Where(r => !string.IsNullOrEmpty(r.Publisher))
+             .Select(r => r.Publisher)
+             .Distinct()
+             .Select(_ => new Publisher() { Name = _ })
+             .ToList();
+            return publishers;
         }
 
         private void DisplayList(List<Record> records)
