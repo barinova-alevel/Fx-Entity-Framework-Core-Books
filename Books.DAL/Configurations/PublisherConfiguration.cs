@@ -9,6 +9,7 @@ namespace Books.DataAccessLayer.Configurations
         public void Configure(EntityTypeBuilder<Publisher> builder)
         {
             builder.ToTable("publishers").HasKey(p => p.Id);
+            builder.Property(a => a.Id).IsRequired().HasColumnName("PublisherId"); 
             builder.Property(p => p.Name).IsRequired().HasColumnName("Name");
         }
     }
