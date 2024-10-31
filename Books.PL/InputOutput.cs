@@ -1,4 +1,7 @@
 ﻿using Books.BussinessLogicLayer.Services;
+using Books.DataAccessLayer;
+using Books.DataAccessLayer.Models;
+using Books.DataAccessLayer.Repositories;
 using Serilog;
 
 namespace Books.PresentationLayer
@@ -15,15 +18,36 @@ namespace Books.PresentationLayer
             throw new NotImplementedException();
         }
 
-        public void Run()
+        public async Task Run()
         {
             Console.WriteLine("Please provide a file path to books list:");
             string userInput = ReadConsoleInput();
             string filePath = GetFilePath(userInput);
+
             var csvService = new CsvService();
             var records = csvService.ParseCsv(filePath);
+            var authors = csvService.GetListUniqueAuthors(records);
+            var authorsMap = authors.ToDictionary(_ => _.Name);
+            var genres = csvService.GetListUniqueGenres(records);
+            var genresMap = genres.ToDictionary(_ => _.Name);
+            var publishers = csvService.GetListUniquePublishers(records);
+            var publishersMap = publishers.ToDictionary(_ => _.Name);
+            var books = records
+                .Select(_ => new Book()
+                {
+                    Title = _.Title,
+                    ReleaseDate = _.ReleaseDate,
+                    Pages = _.Pages,
+                    Author = authorsMap[_.Author],
+                    Genre = genresMap[_.Genre],
+                    Publisher = publishersMap[_.Publisher]
+                })
+                .ToList();
+
+            var bookRepository = new BookRepository(new ApplicationContext());
+            await bookRepository.AddRangeAsync(books);
             //check if program has been run with same file path, then avoid duplicated entries. 
-            //Ensure the date in the CSV file is formatted correctly
+            //ensure the date in the CSV file is formatted correctly
         }
 
         public string GetFilePath(string userInput)
@@ -69,9 +93,9 @@ namespace Books.PresentationLayer
 
             if (Path.IsPathRooted(path) && !string.IsNullOrEmpty(Path.GetFileName(path)))
             {
-                isValid =  true;
+                isValid = true;
             }
-            
+
             return isValid;
         }
 

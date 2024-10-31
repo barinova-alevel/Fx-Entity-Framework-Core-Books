@@ -20,7 +20,7 @@ class Program
         Log.Logger.Information("start");
 
         InputOutput inputOutput = new InputOutput();
-        inputOutput.Run();
+        inputOutput.Run().Wait();
         Console.ReadKey();
     }
 }
