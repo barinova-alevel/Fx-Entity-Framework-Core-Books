@@ -21,6 +21,5 @@ class Program
 
         InputOutput inputOutput = new InputOutput();
         inputOutput.Run().Wait();
-        Console.ReadKey();
     }
 }

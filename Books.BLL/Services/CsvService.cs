@@ -16,7 +16,6 @@ namespace Books.BussinessLogicLayer.Services
                 csv.Context.RegisterClassMap<RecordMap>();
                 var result = csv.GetRecords<Record>().ToList();
                 Log.Information("List of records has been created.");
-                DisplayList(result);
                 return result;
             }
         }
@@ -40,6 +39,7 @@ namespace Books.BussinessLogicLayer.Services
                     Publisher = publishersMap[_.Publisher]
                 })
                 .ToList();
+            Log.Information($"{books.Count} books have been retrieved");
             return books;
         }
 
@@ -80,7 +80,7 @@ namespace Books.BussinessLogicLayer.Services
         {
             foreach (var record in records)
             {
-                Log.Information($"Title: {record.Title}, Pages: {record.Pages}, Genre: {record.Genre}, " +
+                Log.Debug($"Title: {record.Title}, Pages: {record.Pages}, Genre: {record.Genre}, " +
                                   $"Release Date: {record.ReleaseDate}, Author: {record.Author}, Publisher: {record.Publisher}");
             }
         }
