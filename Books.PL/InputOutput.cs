@@ -38,47 +38,52 @@ namespace Books.PresentationLayer
                 }
                 else if (userResponce == "yes")
                 {
-                    
                     Console.WriteLine("Please provide a file path to books list:");
                     string userInput = ReadConsoleInput();
                     string filePath = GetFilePath(userInput);
                     var csvService = new CsvService();
-                    var records = csvService.ParseCsv(filePath);
-                    var books = csvService.GetBooksFromFile(records);
                     var bookRepository = new BookRepository(new ApplicationContext());
 
                     if (!IsFileWasRun(filePath, pathes))
                     {
+                        var records = csvService.ParseCsv(filePath);
+                        var books = csvService.GetBooksFromFile(records);
                         await bookRepository.AddRangeAsync(books);
+                        Log.Information($"{books.Count} books have been added to db.");
                     }
                     else
                     {
+                        Log.Information($"Books from {filePath} have already been retrieved.");
+                        var records = csvService.ParseCsv(filePath);
+                        var books = csvService.GetBooksFromFile(records);
                         await AddUniqueBooksAsync(books, bookRepository);
                     }
                     pathes.Add(filePath);
                 }
              }
-            //check if program has been run with same file path, then avoid duplicated entries.
             //ensure the date in the CSV file is formatted correctly
         }
-
-        //work incorrectly, recheck!
+        
         public async Task AddUniqueBooksAsync(List<Book> fileBooks, BookRepository bookRepository)
         {
             List<Book> uniqueBooks = new List<Book>();
             using var context = new ApplicationContext();
+            Log.Information("Checking presence of books that are not previously added to db.");
 
             foreach (var book in fileBooks)
             {
                 bool exists = await context.Books
+                    .Include(b => b.Author)
                     .AnyAsync(b => b.Title.ToLower().Trim() == book.Title.ToLower().Trim()
-                    && b.Author == book.Author); //check if id here
+                        && b.Author.Name.ToLower().Trim() == book.Author.Name.ToLower().Trim());
 
                 if (!exists)
                 {
+                    Log.Information($"{book.Title}, {book.Author.Name}");
                     uniqueBooks.Add(book);
                 }
             }
+            Log.Information($"{uniqueBooks.Count} books is adding.");
             await bookRepository.AddRangeAsync(uniqueBooks);
         }
 
@@ -97,7 +102,6 @@ namespace Books.PresentationLayer
                 {
                     return ProvidePathAgain();
                 }
-
             }
 
             if (!File.Exists(userInput))
