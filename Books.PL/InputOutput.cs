@@ -2,6 +2,7 @@
 using Books.DataAccessLayer;
 using Books.DataAccessLayer.Models;
 using Books.DataAccessLayer.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace Books.PresentationLayer
@@ -20,34 +21,65 @@ namespace Books.PresentationLayer
 
         public async Task Run()
         {
-            Console.WriteLine("Please provide a file path to books list:");
-            string userInput = ReadConsoleInput();
-            string filePath = GetFilePath(userInput);
+            var pathes = new List<string>();
 
-            var csvService = new CsvService();
-            var records = csvService.ParseCsv(filePath);
-            var authors = csvService.GetListUniqueAuthors(records);
-            var authorsMap = authors.ToDictionary(_ => _.Name);
-            var genres = csvService.GetListUniqueGenres(records);
-            var genresMap = genres.ToDictionary(_ => _.Name);
-            var publishers = csvService.GetListUniquePublishers(records);
-            var publishersMap = publishers.ToDictionary(_ => _.Name);
-            var books = records
-                .Select(_ => new Book()
+            while (true)
+            {
+                Console.WriteLine("Would you like to add books? (yes/no)");
+                string userResponce = Console.ReadLine().ToLower();
+
+                if (userResponce == "no")
                 {
-                    Title = _.Title,
-                    ReleaseDate = _.ReleaseDate,
-                    Pages = _.Pages,
-                    Author = authorsMap[_.Author],
-                    Genre = genresMap[_.Genre],
-                    Publisher = publishersMap[_.Publisher]
-                })
-                .ToList();
+                    Environment.Exit(1);
+                }
+                else if (userResponce != "yes")
+                {
+                    Log.Information("Invalid input. Please enter 'yes' or 'no'.");
+                }
+                else if (userResponce == "yes")
+                {
+                    
+                    Console.WriteLine("Please provide a file path to books list:");
+                    string userInput = ReadConsoleInput();
+                    string filePath = GetFilePath(userInput);
+                    var csvService = new CsvService();
+                    var records = csvService.ParseCsv(filePath);
+                    var books = csvService.GetBooksFromFile(records);
+                    var bookRepository = new BookRepository(new ApplicationContext());
 
-            var bookRepository = new BookRepository(new ApplicationContext());
-            await bookRepository.AddRangeAsync(books);
-            //check if program has been run with same file path, then avoid duplicated entries. 
+                    if (!IsFileWasRun(filePath, pathes))
+                    {
+                        await bookRepository.AddRangeAsync(books);
+                    }
+                    else
+                    {
+                        await AddUniqueBooksAsync(books, bookRepository);
+                    }
+                    pathes.Add(filePath);
+                }
+             }
+            //check if program has been run with same file path, then avoid duplicated entries.
             //ensure the date in the CSV file is formatted correctly
+        }
+
+        //work incorrectly, recheck!
+        public async Task AddUniqueBooksAsync(List<Book> fileBooks, BookRepository bookRepository)
+        {
+            List<Book> uniqueBooks = new List<Book>();
+            using var context = new ApplicationContext();
+
+            foreach (var book in fileBooks)
+            {
+                bool exists = await context.Books
+                    .AnyAsync(b => b.Title.ToLower().Trim() == book.Title.ToLower().Trim()
+                    && b.Author == book.Author); //check if id here
+
+                if (!exists)
+                {
+                    uniqueBooks.Add(book);
+                }
+            }
+            await bookRepository.AddRangeAsync(uniqueBooks);
         }
 
         public string GetFilePath(string userInput)
@@ -85,6 +117,21 @@ namespace Books.PresentationLayer
 
             Log.Information($"The path is valid {userInput}");
             return userInput;
+        }
+
+        private bool IsFileWasRun(string filePath, List<string> runPathes)
+        {
+            if (runPathes != null)
+            {
+                foreach (var runPath in runPathes)
+                {
+                    if (runPath.Equals(filePath))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private bool IsValidPath(string path)

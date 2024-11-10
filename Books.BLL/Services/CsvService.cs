@@ -16,9 +16,31 @@ namespace Books.BussinessLogicLayer.Services
                 csv.Context.RegisterClassMap<RecordMap>();
                 var result = csv.GetRecords<Record>().ToList();
                 Log.Information("List of records has been created.");
-                //DisplayList(result);
+                DisplayList(result);
                 return result;
             }
+        }
+
+        public List<Book> GetBooksFromFile(IEnumerable<Record> records)
+        {
+            var authors = GetListUniqueAuthors(records);
+            var authorsMap = authors.ToDictionary(_ => _.Name);
+            var genres = GetListUniqueGenres(records);
+            var genresMap = genres.ToDictionary(_ => _.Name);
+            var publishers = GetListUniquePublishers(records);
+            var publishersMap = publishers.ToDictionary(_ => _.Name);
+            var books = records
+                .Select(_ => new Book()
+                {
+                    Title = _.Title,
+                    ReleaseDate = _.ReleaseDate,
+                    Pages = _.Pages,
+                    Author = authorsMap[_.Author],
+                    Genre = genresMap[_.Genre],
+                    Publisher = publishersMap[_.Publisher]
+                })
+                .ToList();
+            return books;
         }
 
         public List<Author> GetListUniqueAuthors(IEnumerable<Record> records)
