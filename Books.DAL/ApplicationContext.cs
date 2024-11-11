@@ -12,9 +12,14 @@ namespace Books.DataAccessLayer
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
 
-        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //  Database.EnsureCreated();
+            if (!optionsBuilder.IsConfigured)
+            {
+                const string connectionString = "Server=OKSANA_NANGA;Database=BooksDb;Trusted_Connection=True;TrustServerCertificate=True;";
+                optionsBuilder.UseSqlServer(connectionString);
+                optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

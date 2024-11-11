@@ -24,6 +24,12 @@ namespace Books.DataAccessLayer.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddRangeAsync(IEnumerable<Genre> genres)
+        {
+            await _context.Genres.AddRangeAsync(genres);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task UpdateAsync(Genre genre)
         {
             _context.Genres.Update(genre);
