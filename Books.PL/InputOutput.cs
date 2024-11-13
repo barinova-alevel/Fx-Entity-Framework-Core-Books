@@ -2,6 +2,7 @@
 using Books.DataAccessLayer;
 using Books.DataAccessLayer.Models;
 using Books.DataAccessLayer.Repositories;
+using CsvHelper.Configuration.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -39,31 +40,43 @@ namespace Books.PresentationLayer
                 else if (userResponce == "yes")
                 {
                     Console.WriteLine("Please provide a file path to books list:");
-                    string userInput = ReadConsoleInput();
-                    string filePath = GetFilePath(userInput);
-                    var csvService = new CsvService();
-                    var bookRepository = new BookRepository(new ApplicationContext());
+                    try
+                    {
+                        string userInput = ReadConsoleInput();
+                        string filePath = GetFilePath(userInput);
+                        var csvService = new CsvService();
+                        var bookRepository = new BookRepository(new ApplicationContext());
 
-                    if (!IsFileWasRun(filePath, pathes))
-                    {
-                        var records = csvService.ParseCsv(filePath);
-                        var books = csvService.GetBooksFromFile(records);
-                        await bookRepository.AddRangeAsync(books);
-                        Log.Information($"{books.Count} books have been added to db.");
+                        if (!IsFileWasRun(filePath, pathes))
+                        {
+                            var records = csvService.ParseCsv(filePath);
+                            var books = csvService.GetBooksFromFile(records);
+                            await bookRepository.AddRangeAsync(books);
+                            Log.Information($"{books.Count} books have been added to db.");
+                        }
+                        else
+                        {
+                            Log.Information($"Books from {filePath} have already been retrieved.");
+                            var records = csvService.ParseCsv(filePath);
+                            var books = csvService.GetBooksFromFile(records);
+                            await AddUniqueBooksAsync(books, bookRepository);
+                        }
+                        pathes.Add(filePath);
                     }
-                    else
+                    catch (AggregateException ex)
                     {
-                        Log.Information($"Books from {filePath} have already been retrieved.");
-                        var records = csvService.ParseCsv(filePath);
-                        var books = csvService.GetBooksFromFile(records);
-                        await AddUniqueBooksAsync(books, bookRepository);
+                        Log.Information($"{ex.Message}");
+                        continue;
                     }
-                    pathes.Add(filePath);
+                    catch (Exception ex)
+                    {
+                        Log.Debug(ex.Message);
+                        continue;
+                    }
                 }
-             }
-            //ensure the date in the CSV file is formatted correctly
+            }
         }
-        
+
         public async Task AddUniqueBooksAsync(List<Book> fileBooks, BookRepository bookRepository)
         {
             List<Book> uniqueBooks = new List<Book>();
