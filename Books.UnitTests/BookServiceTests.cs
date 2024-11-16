@@ -4,6 +4,7 @@ using Books.DataAccessLayer.Repositories;
 using Books.DataAccessLayer;
 using Moq;
 using NUnit.Framework.Legacy;
+using Microsoft.EntityFrameworkCore;
 
 namespace Books.UnitTests
 {
