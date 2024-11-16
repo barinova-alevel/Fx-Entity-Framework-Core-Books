@@ -1,9 +1,6 @@
 ﻿using Books.BussinessLogicLayer.Services;
 using Books.DataAccessLayer;
-using Books.DataAccessLayer.Models;
 using Books.DataAccessLayer.Repositories;
-using CsvHelper.Configuration.Attributes;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace Books.PresentationLayer
@@ -40,12 +37,15 @@ namespace Books.PresentationLayer
                 else if (userResponce == "yes")
                 {
                     Console.WriteLine("Please provide a file path to books list:");
+
                     try
                     {
                         string userInput = ReadConsoleInput();
                         string filePath = GetFilePath(userInput);
+                        var unitOfWork = new UnitOfWork(new ApplicationContext());
                         var csvService = new CsvService();
                         var bookRepository = new BookRepository(new ApplicationContext());
+                        var bookService = new BookService(unitOfWork);
 
                         if (!IsFileWasRun(filePath, pathes))
                         {
@@ -59,12 +59,13 @@ namespace Books.PresentationLayer
                             Log.Information($"Books from {filePath} have already been retrieved.");
                             var records = csvService.ParseCsv(filePath);
                             var books = csvService.GetBooksFromFile(records);
-                            await AddUniqueBooksAsync(books, bookRepository);
+                            await bookService.AddUniqueBooksAsync(books);
                         }
                         pathes.Add(filePath);
                     }
                     catch (AggregateException ex)
                     {
+                        Log.Information($"Retrieving of file records has failed.");
                         Log.Information($"{ex.Message}");
                         continue;
                     }
@@ -77,37 +78,14 @@ namespace Books.PresentationLayer
             }
         }
 
-        public async Task AddUniqueBooksAsync(List<Book> fileBooks, BookRepository bookRepository)
-        {
-            List<Book> uniqueBooks = new List<Book>();
-            using var context = new ApplicationContext();
-            Log.Information("Checking presence of books that are not previously added to db.");
-
-            foreach (var book in fileBooks)
-            {
-                bool exists = await context.Books
-                    .Include(b => b.Author)
-                    .AnyAsync(b => b.Title.ToLower().Trim() == book.Title.ToLower().Trim()
-                        && b.Author.Name.ToLower().Trim() == book.Author.Name.ToLower().Trim());
-
-                if (!exists)
-                {
-                    Log.Information($"{book.Title}, {book.Author.Name}");
-                    uniqueBooks.Add(book);
-                }
-            }
-            Log.Information($"{uniqueBooks.Count} books is adding.");
-            await bookRepository.AddRangeAsync(uniqueBooks);
-        }
-
         public string GetFilePath(string userInput)
         {
             if (!IsValidPath(userInput))
             {
                 Log.Information("The path is not valid. Would you like to try again? (yes/no)");
-                string userResonse = ReadConsoleInput();
+                string userResponse = ReadConsoleInput();
 
-                if (userResonse == "no")
+                if (userResponse == "no")
                 {
                     Environment.Exit(1);
                 }

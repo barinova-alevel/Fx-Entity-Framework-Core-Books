@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Books.DataAccessLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class init1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,7 +36,7 @@ namespace Books.DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Publishers",
+                name: "publishers",
                 columns: table => new
                 {
                     PublisherId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -44,7 +44,7 @@ namespace Books.DataAccessLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Publishers", x => x.PublisherId);
+                    table.PrimaryKey("PK_publishers", x => x.PublisherId);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,9 +73,9 @@ namespace Books.DataAccessLayer.Migrations
                         principalTable: "Genres",
                         principalColumn: "GenreId");
                     table.ForeignKey(
-                        name: "FK_Books_Publishers_PublisherId",
+                        name: "FK_Books_publishers_PublisherId",
                         column: x => x.PublisherId,
-                        principalTable: "Publishers",
+                        principalTable: "publishers",
                         principalColumn: "PublisherId");
                 });
 
@@ -108,7 +108,7 @@ namespace Books.DataAccessLayer.Migrations
                 name: "Genres");
 
             migrationBuilder.DropTable(
-                name: "Publishers");
+                name: "publishers");
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Books.DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace Books.DataAccessLayer.Repositories
 {
@@ -35,21 +36,31 @@ namespace Books.DataAccessLayer.Repositories
             await _context.SaveChangesAsync();
         }
 
+        //public async Task AddUniqueBooksAsync(List<Book> fileBooks)
+        //{
+        //    List<Book> uniqueBooks = new List<Book>();
+        //    using var context = new ApplicationContext();
+        //    Log.Information("Checking presence of books that are not previously added to db.");
+
+        //    foreach (var book in fileBooks)
+        //    {
+        //        bool exists = await context.Books
+        //            .Include(b => b.Author)
+        //            .AnyAsync(b => b.Title.ToLower().Trim() == book.Title.ToLower().Trim()
+        //                && b.Author.Name.ToLower().Trim() == book.Author.Name.ToLower().Trim());
+
+        //        if (!exists)
+        //        {
+        //            Log.Information($"{book.Title}, {book.Author.Name}");
+        //            uniqueBooks.Add(book);
+        //        }
+        //    }
+        //    Log.Information($"{uniqueBooks.Count} books is adding.");
+        //    await AddRangeAsync(uniqueBooks);
+        //}
         public void Remove(Book book)
         {
-           // _dbSet.Remove(book);
             _context.Remove(book);
-            //save changes?
         }
-
-        //public async Task DeleteAsync(int id)
-        //{
-        //    var book = await _context.Books.FindAsync(id);
-        //    if (book != null)
-        //    {
-        //        _context.Books.Remove(book);
-        //        await _context.SaveChangesAsync();
-        //    }
-        //}
     }
 }
