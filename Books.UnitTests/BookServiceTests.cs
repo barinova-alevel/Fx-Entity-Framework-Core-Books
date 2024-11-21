@@ -11,13 +11,6 @@ namespace Books.UnitTests
     [TestFixture]
     public class BookServiceTests
     {
-
-        [Test]
-        public void ShouldNotFail()
-        {
-            ClassicAssert.Greater(3, 2);
-        }
-
         [Test]
         public async Task AddUniqueBooksAsync_ShouldAddOnlyUniqueBooks()
         {
