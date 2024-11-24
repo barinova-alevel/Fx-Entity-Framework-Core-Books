@@ -8,16 +8,19 @@ namespace Books.BussinessLogicLayer.Services
 {
     public class CsvService
     {
+        private readonly ICsvReader _csvReader;
+
+        public CsvService(ICsvReader csvReader)
+        {
+            _csvReader = csvReader;
+        }
+
         public IEnumerable<Record> ParseCsv(string filePath)
         {
-            using (var reader = new StreamReader(filePath))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                csv.Context.RegisterClassMap<RecordMap>();
-                var result = csv.GetRecords<Record>().ToList();
-                Log.Information("List of records has been created.");
-                return result;
-            }
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
+
+            return _csvReader.ReadCsv(filePath);
         }
 
         public List<Book> GetBooksFromFile(IEnumerable<Record> records)

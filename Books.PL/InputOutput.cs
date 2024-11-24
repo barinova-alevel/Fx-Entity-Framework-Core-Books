@@ -1,4 +1,5 @@
-﻿using Books.BussinessLogicLayer.Services;
+﻿using Books.BussinessLogicLayer;
+using Books.BussinessLogicLayer.Services;
 using Books.DataAccessLayer;
 using Books.DataAccessLayer.Repositories;
 using Serilog;
@@ -43,7 +44,8 @@ namespace Books.PresentationLayer
                         string userInput = ReadConsoleInput();
                         string filePath = GetFilePath(userInput);
                         var unitOfWork = new UnitOfWork(new ApplicationContext());
-                        var csvService = new CsvService();
+                        ICsvReader _csvReader = new CsvReaderWrapper();
+                        var csvService = new CsvService(_csvReader);
                         var bookRepository = new BookRepository(new ApplicationContext());
                         var bookService = new BookService(unitOfWork);
 
