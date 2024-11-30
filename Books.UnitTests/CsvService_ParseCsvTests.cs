@@ -63,6 +63,38 @@ namespace Books.UnitTests
             Assert.Throws<FormatException>(() => _csvService.ParseCsv(filePath));
         }
 
-        //ParseCsv > Get correct records; Get incorrect records; Case sensitivity ; White space in start of entity; file is used; Title is missing; TypeConverterException (dateTime in diff format); Not csv format file; null passinп, missing file, empty lines
+        [Test]
+        public void ParseCsv_Property_ShouldBeCaseSensitive()
+        {
+            // Arrange
+            var filePath = "valid.csv";
+            var expectedRecords = new List<Record>
+        {
+            new Record { Title = "book1", Pages = 100, Genre = "Fiction", ReleaseDate = new DateTime(2024, 11, 20), Author = "Author1" },
+            new Record { Title = "Book2", Pages = 200, Genre = "Classics", ReleaseDate = new DateTime(2023, 5, 15), Author = "Author2" }
+        };
+            _csvReaderMock.Setup(reader => reader.ReadCsv(filePath)).Returns(expectedRecords);
+
+            // Act
+            var result = _csvService.ParseCsv(filePath);
+            var records = result.ToList();
+
+            // Assert
+            ClassicAssert.AreNotEqual(records[0].Title, "Book1");
+        }
+
+        [Test]
+        public void ParseCsv_FileIsUsed()
+        {
+            // Arrange
+            var filePath = "usedFile.csv";
+            var exception = new IOException();
+
+            _csvReaderMock.Setup(reader => reader.ReadCsv(filePath)).Throws(exception);
+            var service = new CsvService(_csvReaderMock.Object);
+
+            // Act && Assert
+            Assert.Throws<IOException>(() => service.ParseCsv(filePath));
+        }
     }
 }
