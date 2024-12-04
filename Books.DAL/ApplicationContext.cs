@@ -12,6 +12,12 @@ namespace Books.DataAccessLayer
         {
         }
 
+        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+         : base(options)
+        {
+        }
+
+
         public ApplicationContext()
         {
         }
