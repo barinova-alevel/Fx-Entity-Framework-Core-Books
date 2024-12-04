@@ -7,6 +7,21 @@ namespace Books.DataAccessLayer
 {
     public class ApplicationContext : DbContext
     {
+        // Comment the following constructor in case of problems with migration.
+        public ApplicationContext(DbContextOptions options) : base(options)
+        {
+        }
+
+        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+         : base(options)
+        {
+        }
+
+
+        public ApplicationContext()
+        {
+        }
+
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Genre> Genres { get; set; }

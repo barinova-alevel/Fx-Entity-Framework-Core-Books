@@ -11,6 +11,5 @@
         public DateTime? PublishedBefore { get; set; }
         public DateTime? PublishedAfter { get; set; }
 
-        // implement Filtrate() here
     }
 }

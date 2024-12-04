@@ -1,8 +1,7 @@
-﻿using Books.BussinessLogicLayer.Services;
+﻿using Books.BussinessLogicLayer;
+using Books.BussinessLogicLayer.Services;
 using Books.DataAccessLayer;
-using Books.DataAccessLayer.Models;
 using Books.DataAccessLayer.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace Books.PresentationLayer
@@ -39,52 +38,46 @@ namespace Books.PresentationLayer
                 else if (userResponce == "yes")
                 {
                     Console.WriteLine("Please provide a file path to books list:");
-                    string userInput = ReadConsoleInput();
-                    string filePath = GetFilePath(userInput);
-                    var csvService = new CsvService();
-                    var bookRepository = new BookRepository(new ApplicationContext());
 
-                    if (!IsFileWasRun(filePath, pathes))
+                    try
                     {
-                        var records = csvService.ParseCsv(filePath);
-                        var books = csvService.GetBooksFromFile(records);
-                        await bookRepository.AddRangeAsync(books);
-                        Log.Information($"{books.Count} books have been added to db.");
+                        string userInput = ReadConsoleInput();
+                        string filePath = GetFilePath(userInput);
+                        var unitOfWork = new UnitOfWork(new ApplicationContext());
+                        ICsvReader _csvReader = new CsvReaderWrapper();
+                        var csvService = new CsvService(_csvReader);
+                        var bookRepository = new BookRepository(new ApplicationContext());
+                        var bookService = new BookService(unitOfWork);
+
+                        if (!IsFileWasRun(filePath, pathes))
+                        {
+                            var records = csvService.ParseCsv(filePath);
+                            var books = csvService.GetBooksFromFile(records);
+                            await bookRepository.AddRangeAsync(books);
+                            Log.Information($"{books.Count} books have been added to db.");
+                        }
+                        else
+                        {
+                            Log.Information($"Books from {filePath} have already been retrieved.");
+                            var records = csvService.ParseCsv(filePath);
+                            var books = csvService.GetBooksFromFile(records);
+                            await bookService.AddUniqueBooksAsync(books);
+                        }
+                        pathes.Add(filePath);
                     }
-                    else
+                    catch (AggregateException ex)
                     {
-                        Log.Information($"Books from {filePath} have already been retrieved.");
-                        var records = csvService.ParseCsv(filePath);
-                        var books = csvService.GetBooksFromFile(records);
-                        await AddUniqueBooksAsync(books, bookRepository);
+                        Log.Information($"Retrieving of file records has failed.");
+                        Log.Information($"{ex.Message}");
+                        continue;
                     }
-                    pathes.Add(filePath);
-                }
-             }
-            //ensure the date in the CSV file is formatted correctly
-        }
-        
-        public async Task AddUniqueBooksAsync(List<Book> fileBooks, BookRepository bookRepository)
-        {
-            List<Book> uniqueBooks = new List<Book>();
-            using var context = new ApplicationContext();
-            Log.Information("Checking presence of books that are not previously added to db.");
-
-            foreach (var book in fileBooks)
-            {
-                bool exists = await context.Books
-                    .Include(b => b.Author)
-                    .AnyAsync(b => b.Title.ToLower().Trim() == book.Title.ToLower().Trim()
-                        && b.Author.Name.ToLower().Trim() == book.Author.Name.ToLower().Trim());
-
-                if (!exists)
-                {
-                    Log.Information($"{book.Title}, {book.Author.Name}");
-                    uniqueBooks.Add(book);
+                    catch (Exception ex)
+                    {
+                        Log.Debug(ex.Message);
+                        continue;
+                    }
                 }
             }
-            Log.Information($"{uniqueBooks.Count} books is adding.");
-            await bookRepository.AddRangeAsync(uniqueBooks);
         }
 
         public string GetFilePath(string userInput)
@@ -92,9 +85,9 @@ namespace Books.PresentationLayer
             if (!IsValidPath(userInput))
             {
                 Log.Information("The path is not valid. Would you like to try again? (yes/no)");
-                string userResonse = ReadConsoleInput();
+                string userResponse = ReadConsoleInput();
 
-                if (userResonse == "no")
+                if (userResponse == "no")
                 {
                     Environment.Exit(1);
                 }
